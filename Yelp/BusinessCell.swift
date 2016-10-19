@@ -21,11 +21,19 @@ class BusinessCell: UITableViewCell {
     var business: Business! {
         didSet {
             nameLabel.text = business.name
+            thumbImageView.setImageWith(business.imageURL!)
+            categoriesLabel.text = business.categories
+            addressLabel.text = business.address
+            reviewsCountLabel.text = "\(business.reviewCount!) Reviews"
+            ratingImageView.setImageWith(business.ratingImageURL!)
+            distanceLabel.text = business.distance
         }
     }
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        thumbImageView.layer.cornerRadius = 3
+        thumbImageView.clipsToBounds = true
         // Initialization code
     }
     
