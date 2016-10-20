@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -18,21 +19,23 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="152" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="3i2-FD-sab">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="147" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="3i2-FD-sab">
                                 <frame key="frameInset" width="375" height="667"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="BusinessCell" rowHeight="152" id="3if-a7-zq1" customClass="BusinessCell" customModule="Yelp" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="92" width="375" height="152"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="BusinessCell" rowHeight="147" id="3if-a7-zq1" customClass="BusinessCell" customModule="Yelp" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="92" width="375" height="147"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="3if-a7-zq1" id="jcX-cF-zvs">
-                                            <frame key="frameInset" width="375" height="151"/>
+                                            <frame key="frameInset" width="375" height="146"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cEJ-LC-orJ">
-                                                    <frame key="frameInset" minX="8" minY="8" width="80" height="80"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="cEJ-LC-orJ">
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="80" id="Ime-u3-N9o"/>
+                                                        <constraint firstAttribute="height" constant="80" id="iC3-DP-dju"/>
+                                                    </constraints>
                                                 </imageView>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nDP-a6-B1w">
                                                     <frame key="frameInset" minX="104" minY="36" width="83" height="15"/>
@@ -81,6 +84,11 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="cEJ-LC-orJ" firstAttribute="top" secondItem="jcX-cF-zvs" secondAttribute="top" constant="8" id="3Dw-PG-fYE"/>
+                                                <constraint firstItem="cEJ-LC-orJ" firstAttribute="leading" secondItem="jcX-cF-zvs" secondAttribute="leading" constant="8" id="PH1-Gv-QiT"/>
+                                                <constraint firstAttribute="bottomMargin" relation="greaterThanOrEqual" secondItem="cEJ-LC-orJ" secondAttribute="bottom" constant="12" id="wed-5T-Bbm"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="addressLabel" destination="SOa-CB-07r" id="bKd-I9-V5R"/>
