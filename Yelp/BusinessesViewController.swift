@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate {
     
     var businesses: [Business]!
     
@@ -45,7 +45,16 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
          }
          }
          */
-        
+    }
+    
+    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
+        let categories = filters["categories"] as! [String]?
+        let deals = filters["offeringDeal"] as! Bool?
+        let sortCriteria = filters["sortCriteria"] as! YelpSortMode?
+        Business.searchWithTerm(term: "restaurants", sort: sortCriteria, categories: categories, deals: deals) { (businesses: [Business]?, error: Error?) -> Void in
+            self.businesses = businesses
+            self.tableView.reloadData()
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -68,14 +77,10 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         // Dispose of any resources that can be recreated.
     }
     
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let navigationController = segue.destination as! UINavigationController
+        let filtersViewController = navigationController.topViewController as! FiltersViewController
+        filtersViewController.delegate = self
+    }
 }
