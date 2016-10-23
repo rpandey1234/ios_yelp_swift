@@ -17,11 +17,10 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     @IBOutlet weak var tableView: UITableView!
     var categories: [[String: String]]!
     weak var delegate: FiltersViewControllerDelegate?
-    var switchStates = [Int:Bool]()
+    var switchStates = [Int:[Int:Bool]]()
     var filters = [String : AnyObject]()
-    var offeringDealSwitchState: Bool?
     var sortCriteria: YelpSortMode?
-    var sortCriteriaData: [(String, YelpSortMode)]?
+    var sortCriteriaData: [(String, YelpSortMode)]!
     
     @IBAction func onCancelTap(_ sender: AnyObject) {
         dismiss(animated: true) {}
@@ -30,8 +29,10 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     @IBAction func onSearchTap(_ sender: AnyObject) {
         dismiss(animated: true) {}
         var filters = [String: AnyObject]()
+        
+        // Categories
         var selectedCategories = [String]()
-        for (row, isSelected) in switchStates {
+        for (row, isSelected) in switchStates[2]! {
             if isSelected {
                 selectedCategories.append(categories[row]["code"]!)
             }
@@ -39,8 +40,17 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         if selectedCategories.count > 0 {
             filters["categories"] = selectedCategories as AnyObject?
         }
-        if offeringDealSwitchState != nil {
-            filters["offeringDeal"] = offeringDealSwitchState as AnyObject?
+        // Offering a deal
+        if switchStates[0]?[0] != nil {
+            filters["offeringDeal"] = switchStates[0]?[0] as AnyObject?
+        }
+        
+        // Sort criteria
+        for (row, isSelected) in switchStates[1]! {
+            if isSelected {
+                sortCriteria = sortCriteriaData[row].1
+                break
+            }
         }
         if sortCriteria != nil {
             filters["sortCriteria"] = sortCriteria as AnyObject?
@@ -81,7 +91,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         if section == 0 {
             return 1
         } else if section == 1 {
-            return 3
+            return sortCriteriaData.count
         } else if section == 2 {
             return categories.count
         }
@@ -89,48 +99,39 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
-            cell.switchLabel.text = "Offering a Deal"
-            cell.delegate = self
-            cell.onSwitch.isOn = offeringDealSwitchState ?? false
-            return cell
-        } else if indexPath.section == 1 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
-            cell.delegate = self
-            cell.switchLabel.text = sortCriteriaData?[indexPath.row].0
-            cell.onSwitch.isOn = switchStates[indexPath.row] ?? false
-            print("section 1: \(indexPath.row)")
-            return cell
-        } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
-            cell.switchLabel.text = categories[indexPath.row]["name"]
-            cell.delegate = self
-            cell.onSwitch.isOn = switchStates[indexPath.row] ?? false
-            print("section 2: \(indexPath.row)")
-            return cell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
+        cell.delegate = self
+        if switchStates[indexPath.section] == nil {
+            switchStates[indexPath.section] = [Int:Bool]()
         }
+        print("section \(indexPath.section): \(indexPath.row)")
+        cell.onSwitch.isOn = switchStates[indexPath.section]?[indexPath.row] ?? false
+        if indexPath.section == 0 {
+            cell.switchLabel.text = "Offering a Deal"
+        } else if indexPath.section == 1 {
+            cell.switchLabel.text = sortCriteriaData[indexPath.row].0
+        } else {
+            cell.switchLabel.text = categories[indexPath.row]["name"]
+        }
+        return cell
     }
     
     func switchCell(switchCell: SwitchCell, didChange value: Bool) {
         let indexPath = tableView.indexPath(for: switchCell)
-        if indexPath?.section == 0 {
-            offeringDealSwitchState = value
-        } else if indexPath?.section == 1 {
-            switchStates[(indexPath?.row)!] = value
-//            if value {
-//                var numberRows = tableView.numberOfRows(inSection: (indexPath?.section)!)
-//                // Toggle all the others in this section
-//                for sortCriteriaTuple in sortCriteriaData! {
-//                    // if this switch elem is NOT the one toggled
-//                    // make the value false
-//                    if sortCriteriaTuple.0 != switchCell.switchLabel.text {
-//                        switchCell.onSwitch.isOn = false
-//                    }
-//                }
-//            }
-        } else {
-            switchStates[(indexPath?.row)!] = value
+        switchStates[(indexPath?.section)!]?[(indexPath?.row)!] = value
+        if indexPath?.section == 1 {
+            if value {
+                let numberRows = tableView.numberOfRows(inSection: (indexPath?.section)!)
+                // Toggle all the others in this section
+                for row in 0..<numberRows {
+                    print("index: \(row)")
+                    if indexPath?.row != row {
+                        switchStates[(indexPath?.section)!]?[row] = false
+                    }
+                }
+                print(switchStates)
+                tableView.reloadData()
+            }
         }
         
     }
