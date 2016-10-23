@@ -19,8 +19,8 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     weak var delegate: FiltersViewControllerDelegate?
     var switchStates = [Int:[Int:Bool]]()
     var filters = [String : AnyObject]()
-    var sortCriteria: YelpSortMode?
     var sortCriteriaData: [(String, YelpSortMode)]!
+    var distanceData: [(String, Int?)]!
     
     @IBAction func onCancelTap(_ sender: AnyObject) {
         dismiss(animated: true) {}
@@ -46,7 +46,8 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         }
         
         // Sort criteria
-        for (row, isSelected) in switchStates[1]! {
+        var sortCriteria: YelpSortMode?
+        for (row, isSelected) in switchStates[2]! {
             if isSelected {
                 sortCriteria = sortCriteriaData[row].1
                 break
@@ -54,6 +55,18 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         }
         if sortCriteria != nil {
             filters["sortCriteria"] = sortCriteria as AnyObject?
+        }
+        
+        // Distance (should be radius_filter in meters)
+        var distance: Int?
+        for (row, isSelected) in switchStates[1]! {
+            if isSelected {
+                distance = distanceData[row].1
+                break
+            }
+        }
+        if distance != nil {
+            filters["distance"] = distance as AnyObject?
         }
         delegate?.filtersViewController(filtersViewController: self, didUpdateFilters: filters)
     }
@@ -65,6 +78,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         tableView.delegate = self
         categories = yelpCategories()
         sortCriteriaData = [("Best Match", YelpSortMode.bestMatched), ("Distance", YelpSortMode.distance), ("Highly rated", YelpSortMode.highestRated)]
+        distanceData = [("Auto", nil), ("0.3 miles", Int(1609 * 0.3)), ("1 mile", 1609), ("5 miles", 1609 * 5), ("20 miles", 1609 * 20)]
     }
 
     override func didReceiveMemoryWarning() {
@@ -73,15 +87,17 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 4
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0 {
             return "offering a deal"
         } else if section == 1 {
-            return "sort by"
+            return "distance"
         } else if section == 2 {
+            return "sort by"
+        } else if section == 3 {
             return "category"
         }
         return "not found"
@@ -91,8 +107,10 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         if section == 0 {
             return 1
         } else if section == 1 {
-            return sortCriteriaData.count
+            return distanceData.count
         } else if section == 2 {
+            return sortCriteriaData.count
+        } else if section == 3 {
             return categories.count
         }
         return 1
@@ -109,6 +127,8 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         if indexPath.section == 0 {
             cell.switchLabel.text = "Offering a Deal"
         } else if indexPath.section == 1 {
+            cell.switchLabel.text = distanceData[indexPath.row].0
+        } else if indexPath.section == 2 {
             cell.switchLabel.text = sortCriteriaData[indexPath.row].0
         } else {
             cell.switchLabel.text = categories[indexPath.row]["name"]
@@ -119,7 +139,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     func switchCell(switchCell: SwitchCell, didChange value: Bool) {
         let indexPath = tableView.indexPath(for: switchCell)
         switchStates[(indexPath?.section)!]?[(indexPath?.row)!] = value
-        if indexPath?.section == 1 {
+        if indexPath?.section == 1 || indexPath?.section == 2 {
             if value {
                 let numberRows = tableView.numberOfRows(inSection: (indexPath?.section)!)
                 // Toggle all the others in this section
