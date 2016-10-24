@@ -8,9 +8,11 @@
 
 import UIKit
 
-class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate {
+class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, FiltersViewControllerDelegate {
     
+    static let RestaurantQuery = "restuarants"
     var businesses: [Business]!
+    var filteredBusinesses: [Business]!
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -21,30 +23,26 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120
         
-        Business.searchWithTerm(term: "Thai", completion: { (businesses: [Business]?, error: Error?) -> Void in
-            
+        let searchBar = UISearchBar()
+        searchBar.delegate = self
+        searchBar.sizeToFit()
+        navigationItem.titleView = searchBar
+        Business.searchWithTerm(term: "restaurants", completion: { (businesses: [Business]?, error: Error?) -> Void in
             self.businesses = businesses
+            self.filteredBusinesses = businesses
             self.tableView.reloadData()
-            if let businesses = businesses {
-                for business in businesses {
-                    print(business.name!)
-                    print(business.address!)
-                }
+        })
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        print(searchText)
+        filteredBusinesses = searchText.isEmpty ? businesses : businesses.filter({ (business: Business) -> Bool in
+            if let name = business.name {
+                return name.range(of: searchText, options: .caseInsensitive) != nil
             }
-            
-            }
-        )
-        
-        /* Example of Yelp search with more search options specified
-         Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
-         self.businesses = businesses
-         
-         for business in businesses {
-         print(business.name!)
-         print(business.address!)
-         }
-         }
-         */
+            return false
+        })
+        tableView.reloadData()
     }
     
     func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
@@ -52,23 +50,20 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         let deals = filters["offeringDeal"] as! Bool?
         let sortCriteria = filters["sortCriteria"] as! YelpSortMode?
         let distance = filters["distance"] as! Int?
-        Business.searchWithTerm(term: "restaurants", sort: sortCriteria, categories: categories, deals: deals, distance: distance) { (businesses: [Business]?, error: Error?) -> Void in
+        Business.searchWithTerm(term: BusinessesViewController.RestaurantQuery, sort: sortCriteria, categories: categories, deals: deals, distance: distance) { (businesses: [Business]?, error: Error?) -> Void in
             self.businesses = businesses
+            self.filteredBusinesses = self.businesses
             self.tableView.reloadData()
         }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if businesses != nil {
-            return businesses!.count
-        } else {
-            return 0
-        }
+        return filteredBusinesses?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BusinessCell", for: indexPath) as! BusinessCell
-        cell.business = businesses[indexPath.row]
+        cell.business = filteredBusinesses[indexPath.row]
         return cell
     }
     
