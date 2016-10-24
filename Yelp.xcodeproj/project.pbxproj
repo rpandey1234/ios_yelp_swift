@@ -20,6 +20,7 @@
 		B702DCAF1DB74D6800A5DD8D /* BusinessCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B702DCAE1DB74D6800A5DD8D /* BusinessCell.swift */; };
 		B774D79D1DB9E7E300075809 /* SwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B774D79C1DB9E7E300075809 /* SwitchCell.swift */; };
 		B774D7A11DB9EA5500075809 /* FiltersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B774D7A01DB9EA5500075809 /* FiltersViewController.swift */; };
+		B7B82CB21DBDD6B2001374F9 /* InfiniteScrollActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B82CB11DBDD6B2001374F9 /* InfiniteScrollActivityView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		B702DCAE1DB74D6800A5DD8D /* BusinessCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BusinessCell.swift; sourceTree = "<group>"; };
 		B774D79C1DB9E7E300075809 /* SwitchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchCell.swift; sourceTree = "<group>"; };
 		B774D7A01DB9EA5500075809 /* FiltersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FiltersViewController.swift; sourceTree = "<group>"; };
+		B7B82CB11DBDD6B2001374F9 /* InfiniteScrollActivityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfiniteScrollActivityView.swift; sourceTree = "<group>"; };
 		C79C0AC126EDAA235847CEA2 /* Pods_Yelp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Yelp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF53DC2D7A8303A68532E7C6 /* Pods-Yelp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yelp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Yelp/Pods-Yelp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -178,6 +180,7 @@
 			children = (
 				B702DCAE1DB74D6800A5DD8D /* BusinessCell.swift */,
 				B774D79C1DB9E7E300075809 /* SwitchCell.swift */,
+				B7B82CB11DBDD6B2001374F9 /* InfiniteScrollActivityView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -396,6 +399,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B7B82CB21DBDD6B2001374F9 /* InfiniteScrollActivityView.swift in Sources */,
 				B702DCAF1DB74D6800A5DD8D /* BusinessCell.swift in Sources */,
 				22AAAA9C1AEA1EC300A544AF /* BusinessesViewController.swift in Sources */,
 				B774D7A11DB9EA5500075809 /* FiltersViewController.swift in Sources */,
