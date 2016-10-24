@@ -17,6 +17,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     var numShown = 0
     var currentFilters: [String : AnyObject] = [:]
     var loadingMoreView: InfiniteScrollActivityView?
+    var currentSearch = BusinessesViewController.RestaurantQuery
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -42,31 +43,24 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         insets.bottom += InfiniteScrollActivityView.defaultHeight;
         tableView.contentInset = insets
         
-        loadData(offset: numShown)
+        loadData(offset: numShown, term: currentSearch)
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print(searchText)
-        filteredBusinesses = searchText.isEmpty ? businesses : businesses.filter({ (business: Business) -> Bool in
-            if let name = business.name {
-                return name.range(of: searchText, options: .caseInsensitive) != nil
-            }
-            return false
-        })
-        tableView.reloadData()
+        currentSearch = searchText
+        loadData(offset: 0, term: searchText)
     }
     
-    func loadData(offset: Int) {
+    func loadData(offset: Int, term: String) {
         let categories = currentFilters["categories"] as! [String]?
         let deals = currentFilters["offeringDeal"] as! Bool?
         let sortCriteria = currentFilters["sortCriteria"] as! YelpSortMode?
         let distance = currentFilters["distance"] as! Int?
         
-        Business.searchWithTerm(term: BusinessesViewController.RestaurantQuery, sort: sortCriteria, categories: categories, deals: deals, distance: distance, offset: offset) { (businesses: [Business]?, error: Error?) -> Void in
+        Business.searchWithTerm(term: term, sort: sortCriteria, categories: categories, deals: deals, distance: distance, offset: offset) { (businesses: [Business]?, error: Error?) -> Void in
             if offset == 0 {
                 self.businesses = businesses
-                self.filteredBusinesses = self.businesses
-                self.numShown = self.filteredBusinesses.count
+                self.numShown = self.businesses.count
             } else {
                 if let businesses = businesses {
                     // TODO: find better way to append [Business]! and [Business]
@@ -74,8 +68,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
                         self.businesses.append(business)
                     }
                 }
-                self.filteredBusinesses = self.businesses
-                self.numShown += self.filteredBusinesses.count
+                self.numShown += self.businesses.count
             }
             self.tableView.reloadData()
             self.isMoreDataLoading = false
@@ -86,16 +79,16 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
         currentFilters = filters
         numShown = 0
-        loadData(offset: numShown)
+        loadData(offset: numShown, term: BusinessesViewController.RestaurantQuery)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filteredBusinesses?.count ?? 0
+        return businesses?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BusinessCell", for: indexPath) as! BusinessCell
-        cell.business = filteredBusinesses[indexPath.row]
+        cell.business = businesses[indexPath.row]
         return cell
     }
     
@@ -118,7 +111,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
                 loadingMoreView!.startAnimating()
                 
                 // Code to load more results
-                loadData(offset: numShown)
+                loadData(offset: numShown, term: currentSearch)
             }
             
         }
