@@ -148,7 +148,7 @@
                                         <rect key="frame" x="0.0" y="92" width="375" height="58"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="zvs-Gc-Y8O" id="9Rc-Y4-fcs">
-                                            <frame key="frameInset" width="375" height="57"/>
+                                            <frame key="frameInset" width="375" height="58"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5fh-EF-wN6">
@@ -172,6 +172,28 @@
                                         <connections>
                                             <outlet property="onSwitch" destination="4iL-Ah-7Nz" id="1b7-jH-RO7"/>
                                             <outlet property="switchLabel" destination="5fh-EF-wN6" id="7yX-vo-kCH"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="HeaderCell" rowHeight="43" id="bJH-LS-v5e" customClass="HeaderCell" customModule="Yelp" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="150" width="375" height="43"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bJH-LS-v5e" id="1dq-Y1-qWq">
+                                            <frame key="frameInset" width="375" height="42"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X2T-On-HWc">
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="X2T-On-HWc" firstAttribute="centerX" secondItem="1dq-Y1-qWq" secondAttribute="centerX" id="lBl-3s-HUW"/>
+                                                <constraint firstItem="X2T-On-HWc" firstAttribute="centerY" secondItem="1dq-Y1-qWq" secondAttribute="centerY" id="tn7-BC-mXl"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="headerLabel" destination="X2T-On-HWc" id="orv-lO-omz"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>

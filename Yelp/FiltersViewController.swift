@@ -106,20 +106,20 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         return 4
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch section {
-        case DEAL_SECTION:
-            return "offering a deal"
-        case DISTANCE_SECTION:
-            return "distance"
-        case SORT_SECTION:
-            return "sort by"
-        case CATEGORY_SECTION:
-            return "category"
-        default:
-            return "not found"
-        }
-    }
+//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        switch section {
+//        case DEAL_SECTION:
+//            return "Offering a Deal"
+//        case DISTANCE_SECTION:
+//            return "Distance"
+//        case SORT_SECTION:
+//            return "Sort By"
+//        case CATEGORY_SECTION:
+//            return "Category"
+//        default:
+//            return "not found"
+//        }
+//    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
@@ -136,8 +136,35 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         }
     }
     
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let  headerCell = tableView.dequeueReusableCell(withIdentifier: "HeaderCell") as! HeaderCell
+        switch section {
+        case DEAL_SECTION:
+            headerCell.headerLabel.text = "Offering a Deal"
+        case DISTANCE_SECTION:
+            headerCell.headerLabel.text = "Distance"
+        case SORT_SECTION:
+            headerCell.headerLabel.text = "Sort By"
+        default:
+            headerCell.headerLabel.text = "Category"
+        }
+        return headerCell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 52
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
+        cell.layer.borderColor = UIColor.gray.cgColor
+        cell.layer.borderWidth = 2
+        cell.layer.cornerRadius = 2
+        cell.layoutMargins.bottom = 2
+        cell.layoutMargins.left = 5
+        cell.layoutMargins.right = 5
+//        cell.layoutMargins = UIEdgeInsets(top: 0, left: 10, bottom: 5, right: 10)
+        
         cell.delegate = self
         if switchStates[indexPath.section] == nil {
             switchStates[indexPath.section] = [Int:Bool]()
