@@ -27,7 +27,6 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     var filters = [String : AnyObject]()
     var sortCriteriaData: [(String, YelpSortMode)]!
     var distanceData: [(String, Int?)]!
-    var isDistanceSectionExpanded = true
     
     @IBAction func onCancelTap(_ sender: AnyObject) {
         dismiss(animated: true) {}
@@ -82,14 +81,8 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.section {
-        case DEAL_SECTION:
-            return
         case DISTANCE_SECTION:
-            if isDistanceSectionExpanded {
-                return
-            }
-        case SORT_SECTION:
-            return
+            print("should fill in logic here for expand/collapse")
         default:
             return
         }
@@ -127,11 +120,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         case DEAL_SECTION:
             return 1
         case DISTANCE_SECTION:
-            if isDistanceSectionExpanded {
-                return distanceData.count
-            } else {
-                return 1
-            }
+            return distanceData.count
         case SORT_SECTION:
             return sortCriteriaData.count
         case CATEGORY_SECTION:
@@ -182,12 +171,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         case DEAL_SECTION:
             text = "Offering a Deal"
         case DISTANCE_SECTION:
-            if isDistanceSectionExpanded {
-                text = distanceData[indexPath.row].0
-            } else {
-                let selectedDistance = "5 miles"
-                text = selectedDistance
-            }
+            text = distanceData[indexPath.row].0
         case SORT_SECTION:
             text = sortCriteriaData[indexPath.row].0
         default:
