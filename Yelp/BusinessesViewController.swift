@@ -20,6 +20,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     var currentSearch = BusinessesViewController.RestaurantQuery
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var noResultsView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,6 +40,8 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         loadingMoreView!.isHidden = true
         tableView.addSubview(loadingMoreView!)
         
+        noResultsView.isHidden = true
+        noResultsView.frame.size.height = 0
         var insets = tableView.contentInset;
         insets.bottom += InfiniteScrollActivityView.defaultHeight;
         tableView.contentInset = insets
@@ -62,7 +65,15 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
                 self.businesses = businesses
                 if self.businesses != nil {
                     self.numShown = self.businesses.count
+                    if self.businesses.count != 0 {
+                        self.noResultsView.isHidden = true
+                    } else {
+                        self.noResultsView.isHidden = false
+                        self.noResultsView.frame.size.height = 60
+                    }
                 } else {
+                    self.noResultsView.frame.size.height = 60
+                    self.noResultsView.isHidden = false
                     self.numShown = 0
                 }
                 

@@ -23,6 +23,22 @@
                                 <frame key="frameInset" width="375" height="667"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <view key="tableFooterView" hidden="YES" contentMode="scaleToFill" id="7mC-rF-EEI">
+                                    <rect key="frame" x="0.0" y="261" width="375" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Results Found!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ybd-lO-dge">
+                                            <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <constraints>
+                                        <constraint firstItem="Ybd-lO-dge" firstAttribute="centerY" secondItem="7mC-rF-EEI" secondAttribute="centerY" id="Hw5-k1-KXv"/>
+                                        <constraint firstItem="Ybd-lO-dge" firstAttribute="centerX" secondItem="7mC-rF-EEI" secondAttribute="centerX" id="Yr7-ug-H27"/>
+                                    </constraints>
+                                </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="BusinessCell" rowHeight="169" id="3if-a7-zq1" customClass="BusinessCell" customModule="Yelp" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="92" width="375" height="169"/>
@@ -120,6 +136,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="noResultsView" destination="7mC-rF-EEI" id="gqC-SW-dec"/>
                         <outlet property="tableView" destination="3i2-FD-sab" id="FDA-tF-1nQ"/>
                     </connections>
                 </viewController>
