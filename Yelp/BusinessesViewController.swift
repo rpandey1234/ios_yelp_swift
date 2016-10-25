@@ -60,7 +60,12 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         Business.searchWithTerm(term: term, sort: sortCriteria, categories: categories, deals: deals, distance: distance, offset: offset) { (businesses: [Business]?, error: Error?) -> Void in
             if offset == 0 {
                 self.businesses = businesses
-                self.numShown = self.businesses.count
+                if self.businesses != nil {
+                    self.numShown = self.businesses.count
+                } else {
+                    self.numShown = 0
+                }
+                
             } else {
                 if let businesses = businesses {
                     // TODO: find better way to append [Business]! and [Business]

@@ -27,6 +27,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     var filters = [String : AnyObject]()
     var sortCriteriaData: [(String, YelpSortMode)]!
     var distanceData: [(String, Int?)]!
+    var isDistanceSectionExpanded = true
     
     @IBAction func onCancelTap(_ sender: AnyObject) {
         dismiss(animated: true) {}
@@ -79,12 +80,27 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         delegate?.filtersViewController(filtersViewController: self, didUpdateFilters: filters)
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.section {
+        case DEAL_SECTION:
+            return
+        case DISTANCE_SECTION:
+            if isDistanceSectionExpanded {
+                return
+            }
+        case SORT_SECTION:
+            return
+        default:
+            return
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         tableView.dataSource = self
         tableView.delegate = self
-        categories = yelpCategories()
+        categories = Categories.yelpCategories()
         sortCriteriaData = [
             ("Best Match", YelpSortMode.bestMatched),
             ("Distance", YelpSortMode.distance),
@@ -106,27 +122,16 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         return 4
     }
     
-//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        switch section {
-//        case DEAL_SECTION:
-//            return "Offering a Deal"
-//        case DISTANCE_SECTION:
-//            return "Distance"
-//        case SORT_SECTION:
-//            return "Sort By"
-//        case CATEGORY_SECTION:
-//            return "Category"
-//        default:
-//            return "not found"
-//        }
-//    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case DEAL_SECTION:
             return 1
         case DISTANCE_SECTION:
-            return distanceData.count
+            if isDistanceSectionExpanded {
+                return distanceData.count
+            } else {
+                return 1
+            }
         case SORT_SECTION:
             return sortCriteriaData.count
         case CATEGORY_SECTION:
@@ -138,9 +143,10 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let  headerCell = tableView.dequeueReusableCell(withIdentifier: "HeaderCell") as! HeaderCell
+        headerCell.backgroundColor = UIColor.white
         switch section {
         case DEAL_SECTION:
-            headerCell.headerLabel.text = "Offering a Deal"
+            return nil
         case DISTANCE_SECTION:
             headerCell.headerLabel.text = "Distance"
         case SORT_SECTION:
@@ -152,31 +158,36 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section == DEAL_SECTION {
+            return 0
+        }
         return 52
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
-        cell.layer.borderColor = UIColor.gray.cgColor
-        cell.layer.borderWidth = 2
+        cell.preservesSuperviewLayoutMargins = false
+        cell.layer.borderColor = UIColor.red.cgColor
+        cell.layer.borderWidth = 1
         cell.layer.cornerRadius = 2
-        cell.layoutMargins.bottom = 2
-        cell.layoutMargins.left = 5
-        cell.layoutMargins.right = 5
-//        cell.layoutMargins = UIEdgeInsets(top: 0, left: 10, bottom: 5, right: 10)
+        cell.layoutMargins = UIEdgeInsets(top: 0, left: 8, bottom: 4, right: 8)
         
         cell.delegate = self
         if switchStates[indexPath.section] == nil {
             switchStates[indexPath.section] = [Int:Bool]()
         }
-        print("section \(indexPath.section): \(indexPath.row)")
         cell.onSwitch.isOn = switchStates[indexPath.section]?[indexPath.row] ?? false
         var text: String?
         switch indexPath.section {
         case DEAL_SECTION:
             text = "Offering a Deal"
         case DISTANCE_SECTION:
-            text = distanceData[indexPath.row].0
+            if isDistanceSectionExpanded {
+                text = distanceData[indexPath.row].0
+            } else {
+                let selectedDistance = "5 miles"
+                text = selectedDistance
+            }
         case SORT_SECTION:
             text = sortCriteriaData[indexPath.row].0
         default:
@@ -194,189 +205,13 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
                 let numberRows = tableView.numberOfRows(inSection: (indexPath?.section)!)
                 // Toggle all the others in this section
                 for row in 0..<numberRows {
-                    print("index: \(row)")
                     if indexPath?.row != row {
                         switchStates[(indexPath?.section)!]?[row] = false
                     }
                 }
-                print(switchStates)
                 tableView.reloadData()
             }
         }
         
     }
-    
-    func yelpCategories() -> [[String:String]] {
-        let categories = [["name" : "Afghan", "code": "afghani"],
-                          ["name" : "African", "code": "african"],
-                          ["name" : "American, New", "code": "newamerican"],
-                          ["name" : "American, Traditional", "code": "tradamerican"],
-                          ["name" : "Arabian", "code": "arabian"],
-                          ["name" : "Argentine", "code": "argentine"],
-                          ["name" : "Armenian", "code": "armenian"],
-                          ["name" : "Asian Fusion", "code": "asianfusion"],
-                          ["name" : "Asturian", "code": "asturian"],
-                          ["name" : "Australian", "code": "australian"],
-                          ["name" : "Austrian", "code": "austrian"],
-                          ["name" : "Baguettes", "code": "baguettes"],
-                          ["name" : "Bangladeshi", "code": "bangladeshi"],
-                          ["name" : "Barbeque", "code": "bbq"],
-                          ["name" : "Basque", "code": "basque"],
-                          ["name" : "Bavarian", "code": "bavarian"],
-                          ["name" : "Beer Garden", "code": "beergarden"],
-                          ["name" : "Beer Hall", "code": "beerhall"],
-                          ["name" : "Beisl", "code": "beisl"],
-                          ["name" : "Belgian", "code": "belgian"],
-                          ["name" : "Bistros", "code": "bistros"],
-                          ["name" : "Black Sea", "code": "blacksea"],
-                          ["name" : "Brasseries", "code": "brasseries"],
-                          ["name" : "Brazilian", "code": "brazilian"],
-                          ["name" : "Breakfast & Brunch", "code": "breakfast_brunch"],
-                          ["name" : "British", "code": "british"],
-                          ["name" : "Buffets", "code": "buffets"],
-                          ["name" : "Bulgarian", "code": "bulgarian"],
-                          ["name" : "Burgers", "code": "burgers"],
-                          ["name" : "Burmese", "code": "burmese"],
-                          ["name" : "Cafes", "code": "cafes"],
-                          ["name" : "Cafeteria", "code": "cafeteria"],
-                          ["name" : "Cajun/Creole", "code": "cajun"],
-                          ["name" : "Cambodian", "code": "cambodian"],
-                          ["name" : "Canadian", "code": "New)"],
-                          ["name" : "Canteen", "code": "canteen"],
-                          ["name" : "Caribbean", "code": "caribbean"],
-                          ["name" : "Catalan", "code": "catalan"],
-                          ["name" : "Chech", "code": "chech"],
-                          ["name" : "Cheesesteaks", "code": "cheesesteaks"],
-                          ["name" : "Chicken Shop", "code": "chickenshop"],
-                          ["name" : "Chicken Wings", "code": "chicken_wings"],
-                          ["name" : "Chilean", "code": "chilean"],
-                          ["name" : "Chinese", "code": "chinese"],
-                          ["name" : "Comfort Food", "code": "comfortfood"],
-                          ["name" : "Corsican", "code": "corsican"],
-                          ["name" : "Creperies", "code": "creperies"],
-                          ["name" : "Cuban", "code": "cuban"],
-                          ["name" : "Curry Sausage", "code": "currysausage"],
-                          ["name" : "Cypriot", "code": "cypriot"],
-                          ["name" : "Czech", "code": "czech"],
-                          ["name" : "Czech/Slovakian", "code": "czechslovakian"],
-                          ["name" : "Danish", "code": "danish"],
-                          ["name" : "Delis", "code": "delis"],
-                          ["name" : "Diners", "code": "diners"],
-                          ["name" : "Dumplings", "code": "dumplings"],
-                          ["name" : "Eastern European", "code": "eastern_european"],
-                          ["name" : "Ethiopian", "code": "ethiopian"],
-                          ["name" : "Fast Food", "code": "hotdogs"],
-                          ["name" : "Filipino", "code": "filipino"],
-                          ["name" : "Fish & Chips", "code": "fishnchips"],
-                          ["name" : "Fondue", "code": "fondue"],
-                          ["name" : "Food Court", "code": "food_court"],
-                          ["name" : "Food Stands", "code": "foodstands"],
-                          ["name" : "French", "code": "french"],
-                          ["name" : "French Southwest", "code": "sud_ouest"],
-                          ["name" : "Galician", "code": "galician"],
-                          ["name" : "Gastropubs", "code": "gastropubs"],
-                          ["name" : "Georgian", "code": "georgian"],
-                          ["name" : "German", "code": "german"],
-                          ["name" : "Giblets", "code": "giblets"],
-                          ["name" : "Gluten-Free", "code": "gluten_free"],
-                          ["name" : "Greek", "code": "greek"],
-                          ["name" : "Halal", "code": "halal"],
-                          ["name" : "Hawaiian", "code": "hawaiian"],
-                          ["name" : "Heuriger", "code": "heuriger"],
-                          ["name" : "Himalayan/Nepalese", "code": "himalayan"],
-                          ["name" : "Hong Kong Style Cafe", "code": "hkcafe"],
-                          ["name" : "Hot Dogs", "code": "hotdog"],
-                          ["name" : "Hot Pot", "code": "hotpot"],
-                          ["name" : "Hungarian", "code": "hungarian"],
-                          ["name" : "Iberian", "code": "iberian"],
-                          ["name" : "Indian", "code": "indpak"],
-                          ["name" : "Indonesian", "code": "indonesian"],
-                          ["name" : "International", "code": "international"],
-                          ["name" : "Irish", "code": "irish"],
-                          ["name" : "Island Pub", "code": "island_pub"],
-                          ["name" : "Israeli", "code": "israeli"],
-                          ["name" : "Italian", "code": "italian"],
-                          ["name" : "Japanese", "code": "japanese"],
-                          ["name" : "Jewish", "code": "jewish"],
-                          ["name" : "Kebab", "code": "kebab"],
-                          ["name" : "Korean", "code": "korean"],
-                          ["name" : "Kosher", "code": "kosher"],
-                          ["name" : "Kurdish", "code": "kurdish"],
-                          ["name" : "Laos", "code": "laos"],
-                          ["name" : "Laotian", "code": "laotian"],
-                          ["name" : "Latin American", "code": "latin"],
-                          ["name" : "Live/Raw Food", "code": "raw_food"],
-                          ["name" : "Lyonnais", "code": "lyonnais"],
-                          ["name" : "Malaysian", "code": "malaysian"],
-                          ["name" : "Meatballs", "code": "meatballs"],
-                          ["name" : "Mediterranean", "code": "mediterranean"],
-                          ["name" : "Mexican", "code": "mexican"],
-                          ["name" : "Middle Eastern", "code": "mideastern"],
-                          ["name" : "Milk Bars", "code": "milkbars"],
-                          ["name" : "Modern Australian", "code": "modern_australian"],
-                          ["name" : "Modern European", "code": "modern_european"],
-                          ["name" : "Mongolian", "code": "mongolian"],
-                          ["name" : "Moroccan", "code": "moroccan"],
-                          ["name" : "New Zealand", "code": "newzealand"],
-                          ["name" : "Night Food", "code": "nightfood"],
-                          ["name" : "Norcinerie", "code": "norcinerie"],
-                          ["name" : "Open Sandwiches", "code": "opensandwiches"],
-                          ["name" : "Oriental", "code": "oriental"],
-                          ["name" : "Pakistani", "code": "pakistani"],
-                          ["name" : "Parent Cafes", "code": "eltern_cafes"],
-                          ["name" : "Parma", "code": "parma"],
-                          ["name" : "Persian/Iranian", "code": "persian"],
-                          ["name" : "Peruvian", "code": "peruvian"],
-                          ["name" : "Pita", "code": "pita"],
-                          ["name" : "Pizza", "code": "pizza"],
-                          ["name" : "Polish", "code": "polish"],
-                          ["name" : "Portuguese", "code": "portuguese"],
-                          ["name" : "Potatoes", "code": "potatoes"],
-                          ["name" : "Poutineries", "code": "poutineries"],
-                          ["name" : "Pub Food", "code": "pubfood"],
-                          ["name" : "Rice", "code": "riceshop"],
-                          ["name" : "Romanian", "code": "romanian"],
-                          ["name" : "Rotisserie Chicken", "code": "rotisserie_chicken"],
-                          ["name" : "Rumanian", "code": "rumanian"],
-                          ["name" : "Russian", "code": "russian"],
-                          ["name" : "Salad", "code": "salad"],
-                          ["name" : "Sandwiches", "code": "sandwiches"],
-                          ["name" : "Scandinavian", "code": "scandinavian"],
-                          ["name" : "Scottish", "code": "scottish"],
-                          ["name" : "Seafood", "code": "seafood"],
-                          ["name" : "Serbo Croatian", "code": "serbocroatian"],
-                          ["name" : "Signature Cuisine", "code": "signature_cuisine"],
-                          ["name" : "Singaporean", "code": "singaporean"],
-                          ["name" : "Slovakian", "code": "slovakian"],
-                          ["name" : "Soul Food", "code": "soulfood"],
-                          ["name" : "Soup", "code": "soup"],
-                          ["name" : "Southern", "code": "southern"],
-                          ["name" : "Spanish", "code": "spanish"],
-                          ["name" : "Steakhouses", "code": "steak"],
-                          ["name" : "Sushi Bars", "code": "sushi"],
-                          ["name" : "Swabian", "code": "swabian"],
-                          ["name" : "Swedish", "code": "swedish"],
-                          ["name" : "Swiss Food", "code": "swissfood"],
-                          ["name" : "Tabernas", "code": "tabernas"],
-                          ["name" : "Taiwanese", "code": "taiwanese"],
-                          ["name" : "Tapas Bars", "code": "tapas"],
-                          ["name" : "Tapas/Small Plates", "code": "tapasmallplates"],
-                          ["name" : "Tex-Mex", "code": "tex-mex"],
-                          ["name" : "Thai", "code": "thai"],
-                          ["name" : "Traditional Norwegian", "code": "norwegian"],
-                          ["name" : "Traditional Swedish", "code": "traditional_swedish"],
-                          ["name" : "Trattorie", "code": "trattorie"],
-                          ["name" : "Turkish", "code": "turkish"],
-                          ["name" : "Ukrainian", "code": "ukrainian"],
-                          ["name" : "Uzbek", "code": "uzbek"],
-                          ["name" : "Vegan", "code": "vegan"],
-                          ["name" : "Vegetarian", "code": "vegetarian"],
-                          ["name" : "Venison", "code": "venison"],
-                          ["name" : "Vietnamese", "code": "vietnamese"],
-                          ["name" : "Wok", "code": "wok"],
-                          ["name" : "Wraps", "code": "wraps"],
-                          ["name" : "Yugoslav", "code": "yugoslav"]]
-        return categories
-    }
-
 }
